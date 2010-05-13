@@ -1,0 +1,67 @@
+diff -up meshlab-snapshot-svn3524/meshlab/src/fgt/render_rfx/render_rfx.cpp.shader-path meshlab-snapshot-svn3524/meshlab/src/fgt/render_rfx/render_rfx.cpp
+--- meshlab-snapshot-svn3524/meshlab/src/fgt/render_rfx/render_rfx.cpp.shader-path	2010-02-02 19:28:32.000000000 -0800
++++ meshlab-snapshot-svn3524/meshlab/src/fgt/render_rfx/render_rfx.cpp	2010-02-02 19:29:03.000000000 -0800
+@@ -54,7 +54,7 @@ QList<QAction*> RenderRFX::actions()
+ 
+ void RenderRFX::initActionList()
+ {
+-	QDir shadersDir = QDir(qApp->applicationDirPath());
++	QDir shadersDir = QDir("/usr/share/meshlab");
+ 
+ #if defined(Q_OS_WIN)
+ 	if (shadersDir.dirName() == "debug"   ||
+diff -up meshlab-snapshot-svn3524/meshlab/src/meshlabplugins/filter_ao/filter_ao.cpp.shader-path meshlab-snapshot-svn3524/meshlab/src/meshlabplugins/filter_ao/filter_ao.cpp
+--- meshlab-snapshot-svn3524/meshlab/src/meshlabplugins/filter_ao/filter_ao.cpp.shader-path	2010-02-02 19:12:32.000000000 -0800
++++ meshlab-snapshot-svn3524/meshlab/src/meshlabplugins/filter_ao/filter_ao.cpp	2010-02-02 19:13:24.000000000 -0800
+@@ -818,7 +818,7 @@ void AmbientOcclusionPlugin::applyOcclus
+ 
+ void AmbientOcclusionPlugin::set_shaders(char *shaderName, GLuint &v, GLuint &f, GLuint &pr)
+ {	
+-	QDir shadersDir = QDir(qApp->applicationDirPath());
++	QDir shadersDir = QDir("/usr/share/meshlab");
+ 
+ 
+ #if defined(Q_OS_WIN)
+diff -up meshlab-snapshot-svn3524/meshlab/src/meshlabplugins/render_gdp/meshrender.cpp.shader-path meshlab-snapshot-svn3524/meshlab/src/meshlabplugins/render_gdp/meshrender.cpp
+--- meshlab-snapshot-svn3524/meshlab/src/meshlabplugins/render_gdp/meshrender.cpp.shader-path	2010-02-02 19:23:58.000000000 -0800
++++ meshlab-snapshot-svn3524/meshlab/src/meshlabplugins/render_gdp/meshrender.cpp	2010-02-02 19:24:20.000000000 -0800
+@@ -110,7 +110,7 @@ void MeshShaderRenderPlugin::initActionL
+ 	qaNone->setCheckable(false);
+ 	actionList << qaNone;
+ 
+-	QDir shadersDir = QDir(qApp->applicationDirPath());
++	QDir shadersDir = QDir("/usr/share/meshlab");
+ #if defined(Q_OS_WIN)
+ 	if (shadersDir.dirName() == "debug" || shadersDir.dirName() == "release" || shadersDir.dirName() == "plugins"  )
+ 		shadersDir.cdUp();
+diff -up meshlab-snapshot-svn3524/meshlab/src/meshlabplugins/render_gdp/shaderDialog.cpp.shader-path meshlab-snapshot-svn3524/meshlab/src/meshlabplugins/render_gdp/shaderDialog.cpp
+--- meshlab-snapshot-svn3524/meshlab/src/meshlabplugins/render_gdp/shaderDialog.cpp.shader-path	2010-02-02 19:27:14.000000000 -0800
++++ meshlab-snapshot-svn3524/meshlab/src/meshlabplugins/render_gdp/shaderDialog.cpp	2010-02-02 19:27:52.000000000 -0800
+@@ -323,7 +323,7 @@ void ShaderDialog::changeTexturePath(int
+ void ShaderDialog::browseTexturePath(int i) {
+ 	QFileDialog fd(0,"Choose new texture");
+ 
+-	QDir shadersDir = QDir(qApp->applicationDirPath());
++	QDir shadersDir = QDir("/usr/share/meshlab");
+ #if defined(Q_OS_WIN)
+ 	if (shadersDir.dirName() == "debug" || shadersDir.dirName() == "release")
+ 		shadersDir.cdUp();
+@@ -372,4 +372,4 @@ void ShaderDialog::reloadTexture(int i) 
+ 	glTexParameteri( shaderInfo->textureInfo[i].Target, GL_TEXTURE_WRAP_R, shaderInfo->textureInfo[i].WrapR ); 
+ 
+ 	glarea->updateGL();
+-}
+\ No newline at end of file
++}
+diff -up meshlab-snapshot-svn3524/meshlab/src/meshlabplugins/render_splatpyramid/dialog.cpp.shader-path meshlab-snapshot-svn3524/meshlab/src/meshlabplugins/render_splatpyramid/dialog.cpp
+--- meshlab-snapshot-svn3524/meshlab/src/meshlabplugins/render_splatpyramid/dialog.cpp.shader-path	2010-02-02 19:15:34.000000000 -0800
++++ meshlab-snapshot-svn3524/meshlab/src/meshlabplugins/render_splatpyramid/dialog.cpp	2010-02-02 19:16:07.000000000 -0800
+@@ -123,7 +123,7 @@ void Dialog::changeTexturePath(int i) {
+ void Dialog::browseTexturePath(int i) {
+   QFileDialog fd(0,"Choose new texture");
+ 
+-  QDir shadersDir = QDir(qApp->applicationDirPath());
++  QDir shadersDir = QDir("/usr/share/meshlab");
+ #if defined(Q_OS_WIN)
+   if (shadersDir.dirName() == "debug" || shadersDir.dirName() == "release")
+ 	shadersDir.cdUp();

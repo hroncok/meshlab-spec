@@ -1,0 +1,12 @@
+diff -uNr meshlab-snapshot-svn3524.orig/vcglib/vcg/complex/trimesh/hole.h meshlab-snapshot-svn3524/vcglib/vcg/complex/trimesh/hole.h
+--- meshlab-snapshot-svn3524.orig/vcglib/vcg/complex/trimesh/hole.h	2008-11-26 09:58:15.000000000 -0800
++++ meshlab-snapshot-svn3524/vcglib/vcg/complex/trimesh/hole.h	2010-01-22 14:04:28.000000000 -0800
+@@ -201,7 +201,7 @@
+ 				assert(e0.IsBorder());
+ 				e1=e0;
+ 				e1.NextB();
+-        n=Normal<TrivialEar>(*this);
++        n=vcg::Normal<TrivialEar>(*this);
+ 				ComputeQuality();
+ 				ComputeAngle();
+ 			}
