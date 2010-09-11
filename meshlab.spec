@@ -1,7 +1,7 @@
 Summary:	A system for processing and editing unstructured 3D triangular meshes
 Name:		meshlab
 Version:	1.2.2
-Release:	4%{?dist}
+Release:	5%{?dist}
 URL:		http://meshlab.sourceforge.net/
 
 Source0:	http://downloads.sourceforge.net/%{name}/MeshLabSrc_v122.tar.gz
@@ -16,6 +16,9 @@ Patch2:		meshlab-shader-path.patch
 # patch to fix C++ namespace conflict
 # http://sourceforge.net/tracker/?func=detail&aid=2872526&group_id=149444&atid=774731
 Patch3:		meshlab-vcglib-namespace.patch
+
+# Remove direct invocation of constructors to make GCC 4.5 happy
+Patch4:		meshlab-gcc45.patch
 
 License:	GPLv2+ and BSD
 Group:		Applications/Multimedia
@@ -45,6 +48,7 @@ these kinds of meshes.
 %patch -P 1 -p1 -b .plugin-path
 %patch -P 2 -p1 -b .shader-path
 %patch -P 3 -p1 -b .vcglib-namespace
+%patch -P 4 -p1 -b .gcc45
 
 # Turn of execute permissions on source files to avoid rpmlint
 # errors and warnings for the debuginfo package
@@ -144,6 +148,9 @@ rm -rf %{buildroot}
 %{_datadir}/pixmaps/meshlab.png
 
 %changelog
+* Fri Sep 10 2010 Eric Smith <eric@brouhaha.com> - 1.2.2-5
+- Remove direct invocation of constructor to make GCC 4.5 happy
+
 * Mon May  3 2010 Eric Smith <eric@brouhaha.com> - 1.2.2-4
 - in prep, remove bundled getopt library sources, to ensure
   that we're using the system library instead
