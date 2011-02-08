@@ -1,7 +1,7 @@
 Summary:	A system for processing and editing unstructured 3D triangular meshes
 Name:		meshlab
 Version:	1.2.2
-Release:	5%{?dist}
+Release:	6%{?dist}
 URL:		http://meshlab.sourceforge.net/
 
 Source0:	http://downloads.sourceforge.net/%{name}/MeshLabSrc_v122.tar.gz
@@ -148,6 +148,9 @@ rm -rf %{buildroot}
 %{_datadir}/pixmaps/meshlab.png
 
 %changelog
+* Tue Feb 08 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.2.2-6
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
+
 * Fri Sep 10 2010 Eric Smith <eric@brouhaha.com> - 1.2.2-5
 - Remove direct invocation of constructor to make GCC 4.5 happy
 
