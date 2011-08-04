@@ -14,7 +14,7 @@ Source2:	http://downloads/sourceforge.net/%{name}/MeshLabSrc_v122.tar.gz
 # Fedora-specific patches to use shared libraries, and to put plugins and
 # shaders in appropriate directories
 Patch0:		meshlab-1.3.0a-sharedlib.patch
-Patch1:		meshlab-plugin-path.patch
+Patch1:		meshlab-1.2.3a-plugin-path.patch
 Patch2:		meshlab-1.3.0a-shader-path.patch
 
 # Patch to fix FTBFS due to missing include
