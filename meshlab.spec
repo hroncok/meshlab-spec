@@ -1,6 +1,6 @@
 Summary:	A system for processing and editing unstructured 3D triangular meshes
 Name:		meshlab
-Version:	1.3.0
+Version:	1.3.0a
 Release:	1%{?dist}
 URL:		http://meshlab.sourceforge.net/`
 
@@ -16,6 +16,14 @@ Source2:	http://downloads/sourceforge.net/%{name}/MeshLabSrc_v122.tar.gz
 Patch0:		meshlab-1.3.0a-sharedlib.patch
 Patch1:		meshlab-plugin-path.patch
 Patch2:		meshlab-1.3.0a-shader-path.patch
+
+# Patch to fix FTBFS due to missing include
+# from Teemu Ikonen <tpikonen@gmail.com>
+Patch3:		meshlab-1.3.0a-cstddef.patch
+
+# Patch to fix reading of .ply files in comma separator locales
+# from Teemu Ikonen <tpikonen@gmail.com>
+Patch4:		meshlab-1.3.0a-ply-numeric.patch
 
 License:	GPLv2+ and BSD
 Group:		Applications/Multimedia
@@ -50,6 +58,8 @@ rm -rf meshlab-snapshot-svn3524
 %patch -P 0 -p1 -b .sharedlib
 %patch -P 1 -p1 -b .plugin-path
 %patch -P 2 -p1 -b .shader-path
+%patch -P 3 -p1 -b .ply-numeric
+%patch -P 4 -p1 -b .cstddef
 
 # Turn of execute permissions on source files to avoid rpmlint
 # errors and warnings for the debuginfo package
@@ -173,8 +183,11 @@ rm -rf %{buildroot}
 %{_datadir}/pixmaps/meshlab.png
 
 %changelog
-* Wed Aug 03 2011 Eric Smith <eric@brouhaha.com> - 1.3.0-1
+* Wed Aug 03 2011 Eric Smith <eric@brouhaha.com> - 1.3.0a-1
 - update to latest upstream release
+- added patch from Teemu Ikonen to fix FTBFS
+- added patch from Teemu Ikonen to fix reading of .ply files in comma
+  separator locales
 
 * Tue Oct 05 2010 jkeating - 1.2.2-5.1
 - Rebuilt for gcc bug 634757
