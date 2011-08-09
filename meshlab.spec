@@ -1,7 +1,7 @@
 Summary:	A system for processing and editing unstructured 3D triangular meshes
 Name:		meshlab
 Version:	1.3.0a
-Release:	1%{?dist}
+Release:	2%{?dist}
 URL:		http://meshlab.sourceforge.net/`
 
 Source0:	http://downloads.sourceforge.net/%{name}/MeshLabSrc_AllInc_v130a.tgz
@@ -77,10 +77,10 @@ rm -rf meshlab/src/external/{ann*,bzip2*,glew*,levmar*,lib3ds*,muparser*,ode*,qh
 # Note that the build instructions in README.linux are out of date.
 
 cd meshlab/src/external
-%{_qt4_qmake} -recursive external.pro
+%{_qt4_qmake} -spec linux-g++ -recursive external.pro
 make %{?_smp_mflags} CFLAGS="%{optflags}"
 cd ..
-%{_qt4_qmake} -recursive meshlab_full.pro
+%{_qt4_qmake} -spec linux-g++ -recursive meshlab_full.pro
 make %{?_smp_mflags} CFLAGS="%{optflags}" \
 	DEFINES="-D__DISABLE_AUTO_STATS__ -DPLUGIN_DIR=\\\"%{_libdir}/%{name}\\\""
 
@@ -183,6 +183,9 @@ rm -rf %{buildroot}
 %{_datadir}/pixmaps/meshlab.png
 
 %changelog
+* Mon Aug 08 2011 Eric Smith <eric@brouhaha.com> - 1.3.0a-2
+- use qmail -spec linux-g++ to fix FTBFS with qt 4.8
+
 * Wed Aug 03 2011 Eric Smith <eric@brouhaha.com> - 1.3.0a-1
 - update to latest upstream release
 - added patch from Teemu Ikonen to fix FTBFS
