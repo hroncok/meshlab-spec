@@ -1,6 +1,6 @@
 Summary:	A system for processing and editing unstructured 3D triangular meshes
 Name:		meshlab
-Version:	1.3.1
+Version:	1.3.0a
 Release:	1%{?dist}
 URL:		http://meshlab.sourceforge.net/`
 
@@ -13,7 +13,7 @@ Source2:	http://downloads.sourceforge.net/%{name}/MeshLabSrc_v122.tar.gz
 
 # Fedora-specific patches to use shared libraries, and to put plugins and
 # shaders in appropriate directories
-Patch0:		meshlab-1.3.1-sharedlib.patch
+Patch0:		meshlab-1.3.0a-sharedlib.patch
 Patch1:		meshlab-1.2.3a-plugin-path.patch
 Patch2:		meshlab-1.3.0a-shader-path.patch
 
@@ -196,8 +196,7 @@ rm -rf %{buildroot}
 %{_datadir}/pixmaps/meshlab.png
 
 %changelog
-* Wed Oct 05 2011 Eric Smith <eric@brouhaha.com> - 1.3.1-1
-- update to latest upstream release
+* Wed Oct 05 2011 Eric Smith <eric@brouhaha.com> - 1.3.0a-2
 - removed bundled qtsoap, use shared library from Fedora package
 - fix rpath handling for internal-only library
 
