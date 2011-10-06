@@ -1,6 +1,6 @@
-diff -up meshlab-1.3.0/meshlab/src/common/common.pro.sharedlib meshlab-1.3.0/meshlab/src/common/common.pro
---- meshlab-1.3.0/meshlab/src/common/common.pro.sharedlib	2011-01-25 00:49:48.000000000 -0700
-+++ meshlab-1.3.0/meshlab/src/common/common.pro	2011-08-03 17:14:44.000000000 -0600
+diff -up meshlab-1.3.1/meshlab/src/common/common.pro.sharedlib meshlab-1.3.1/meshlab/src/common/common.pro
+--- meshlab-1.3.1/meshlab/src/common/common.pro.sharedlib	2011-01-24 23:49:48.000000000 -0800
++++ meshlab-1.3.1/meshlab/src/common/common.pro	2011-10-05 19:59:01.000000000 -0700
 @@ -1,7 +1,4 @@
  VCGDIR = ../../../vcglib
 -GLEWDIR = ../external/glew-1.5.1
@@ -40,9 +40,9 @@ diff -up meshlab-1.3.0/meshlab/src/common/common.pro.sharedlib meshlab-1.3.0/mes
  	xmlfilterinfo.cpp \
 -    $$GLEWCODE \
      meshlabdocumentxml.cpp
-diff -up meshlab-1.3.0/meshlab/src/external/external.pro.sharedlib meshlab-1.3.0/meshlab/src/external/external.pro
---- meshlab-1.3.0/meshlab/src/external/external.pro.sharedlib	2011-01-25 00:49:46.000000000 -0700
-+++ meshlab-1.3.0/meshlab/src/external/external.pro	2011-08-03 17:18:55.000000000 -0600
+diff -up meshlab-1.3.1/meshlab/src/external/external.pro.sharedlib meshlab-1.3.1/meshlab/src/external/external.pro
+--- meshlab-1.3.1/meshlab/src/external/external.pro.sharedlib	2011-01-24 23:49:46.000000000 -0800
++++ meshlab-1.3.1/meshlab/src/external/external.pro	2011-10-05 19:59:01.000000000 -0700
 @@ -2,9 +2,5 @@ config += debug_and_release
  
  TEMPLATE      = subdirs
@@ -54,9 +54,9 @@ diff -up meshlab-1.3.0/meshlab/src/external/external.pro.sharedlib meshlab-1.3.0
 -                structuresynth/structuresynth.pro
 +SUBDIRS       = structuresynth/structuresynth.pro
  #                openkinect/openkinect.pro
-diff -up meshlab-1.3.0/meshlab/src/fgt/filter_func/filter_func.pro.sharedlib meshlab-1.3.0/meshlab/src/fgt/filter_func/filter_func.pro
---- meshlab-1.3.0/meshlab/src/fgt/filter_func/filter_func.pro.sharedlib	2011-01-25 00:49:30.000000000 -0700
-+++ meshlab-1.3.0/meshlab/src/fgt/filter_func/filter_func.pro	2011-08-03 17:14:44.000000000 -0600
+diff -up meshlab-1.3.1/meshlab/src/fgt/filter_func/filter_func.pro.sharedlib meshlab-1.3.1/meshlab/src/fgt/filter_func/filter_func.pro
+--- meshlab-1.3.1/meshlab/src/fgt/filter_func/filter_func.pro.sharedlib	2011-01-24 23:49:30.000000000 -0800
++++ meshlab-1.3.1/meshlab/src/fgt/filter_func/filter_func.pro	2011-10-05 19:59:01.000000000 -0700
 @@ -6,15 +6,11 @@ SOURCES       += filter_func.cpp
  
  TARGET        = filter_func
@@ -74,9 +74,35 @@ diff -up meshlab-1.3.0/meshlab/src/fgt/filter_func/filter_func.pro.sharedlib mes
 -linux-g++-64:LIBS       += ../../external/lib/linux-g++-64/libmuparser.a
 +linux-g++:LIBS       += -lmuparser
  win32-g++:LIBS		 += ../../external/lib/win32-gcc/libmuparser.a
-diff -up meshlab-1.3.0/meshlab/src/fgt/filter_qhull/filter_qhull.pro.sharedlib meshlab-1.3.0/meshlab/src/fgt/filter_qhull/filter_qhull.pro
---- meshlab-1.3.0/meshlab/src/fgt/filter_qhull/filter_qhull.pro.sharedlib	2011-01-25 00:49:27.000000000 -0700
-+++ meshlab-1.3.0/meshlab/src/fgt/filter_qhull/filter_qhull.pro	2011-08-03 17:14:44.000000000 -0600
+diff -up meshlab-1.3.1/meshlab/src/fgt/filter_photosynth/filter_photosynth.pro.sharedlib meshlab-1.3.1/meshlab/src/fgt/filter_photosynth/filter_photosynth.pro
+--- meshlab-1.3.1/meshlab/src/fgt/filter_photosynth/filter_photosynth.pro.sharedlib	2011-02-15 01:39:46.000000000 -0800
++++ meshlab-1.3.1/meshlab/src/fgt/filter_photosynth/filter_photosynth.pro	2011-10-05 19:59:01.000000000 -0700
+@@ -1,17 +1,15 @@
+ include (../../shared.pri)
+ 
+-QTSOAPDIR = ../../external/qtsoap-2.7_1/src
+-
+-INCLUDEPATH += $$QTSOAPDIR
++INCLUDEPATH += /usr/include/QtSoap
+ 
+ HEADERS       += filter_photosynth.h \
+-                 synthData.h \
+-                 $$QTSOAPDIR/qtsoap.h
++                 synthData.h
+ 
+ SOURCES       += filter_photosynth.cpp \
+-                 downloader.cpp \
+-                 $$QTSOAPDIR/qtsoap.cpp
++                 downloader.cpp
+ 
+ TARGET         = filter_photosynth
+ 
++linux-g++:LIBS += -lqtsoap
++
+ QT += network
+diff -up meshlab-1.3.1/meshlab/src/fgt/filter_qhull/filter_qhull.pro.sharedlib meshlab-1.3.1/meshlab/src/fgt/filter_qhull/filter_qhull.pro
+--- meshlab-1.3.1/meshlab/src/fgt/filter_qhull/filter_qhull.pro.sharedlib	2011-01-24 23:49:27.000000000 -0800
++++ meshlab-1.3.1/meshlab/src/fgt/filter_qhull/filter_qhull.pro	2011-10-05 19:59:01.000000000 -0700
 @@ -8,28 +8,8 @@ HEADERS       += filter_qhull.h \
  SOURCES       += filter_qhull.cpp \ 
  		qhull_tools.cpp 
@@ -110,9 +136,9 @@ diff -up meshlab-1.3.0/meshlab/src/fgt/filter_qhull/filter_qhull.pro.sharedlib m
 -TARGET        = filter_qhull
 \ No newline at end of file
 +TARGET        = filter_qhull
-diff -up meshlab-1.3.0/meshlab/src/fgt/filter_qhull/qhull_tools.h.sharedlib meshlab-1.3.0/meshlab/src/fgt/filter_qhull/qhull_tools.h
---- meshlab-1.3.0/meshlab/src/fgt/filter_qhull/qhull_tools.h.sharedlib	2011-01-25 00:49:27.000000000 -0700
-+++ meshlab-1.3.0/meshlab/src/fgt/filter_qhull/qhull_tools.h	2011-08-03 17:14:44.000000000 -0600
+diff -up meshlab-1.3.1/meshlab/src/fgt/filter_qhull/qhull_tools.h.sharedlib meshlab-1.3.1/meshlab/src/fgt/filter_qhull/qhull_tools.h
+--- meshlab-1.3.1/meshlab/src/fgt/filter_qhull/qhull_tools.h.sharedlib	2011-01-24 23:49:27.000000000 -0800
++++ meshlab-1.3.1/meshlab/src/fgt/filter_qhull/qhull_tools.h	2011-10-05 19:59:01.000000000 -0700
 @@ -55,14 +55,14 @@ extern "C"
  #endif
  #include <stdio.h>
@@ -136,9 +162,9 @@ diff -up meshlab-1.3.0/meshlab/src/fgt/filter_qhull/qhull_tools.h.sharedlib mesh
  #if defined(__cplusplus)
  }
  #endif
-diff -up meshlab-1.3.0/meshlab/src/meshlab/meshlab.pro.sharedlib meshlab-1.3.0/meshlab/src/meshlab/meshlab.pro
---- meshlab-1.3.0/meshlab/src/meshlab/meshlab.pro.sharedlib	2011-02-15 02:39:47.000000000 -0700
-+++ meshlab-1.3.0/meshlab/src/meshlab/meshlab.pro	2011-08-03 17:14:44.000000000 -0600
+diff -up meshlab-1.3.1/meshlab/src/meshlab/meshlab.pro.sharedlib meshlab-1.3.1/meshlab/src/meshlab/meshlab.pro
+--- meshlab-1.3.1/meshlab/src/meshlab/meshlab.pro.sharedlib	2011-02-15 01:39:47.000000000 -0800
++++ meshlab-1.3.1/meshlab/src/meshlab/meshlab.pro	2011-10-05 20:00:09.000000000 -0700
 @@ -1,5 +1,4 @@
  VCGDIR = ../../../vcglib
 -GLEWDIR = ../external/glew-1.5.1
@@ -179,9 +205,9 @@ diff -up meshlab-1.3.0/meshlab/src/meshlab/meshlab.pro.sharedlib meshlab-1.3.0/m
  
  
  # uncomment in your local copy only in emergency cases.
-diff -up meshlab-1.3.0/meshlab/src/meshlabplugins/filter_isoparametrization/filter_isoparametrization.pro.sharedlib meshlab-1.3.0/meshlab/src/meshlabplugins/filter_isoparametrization/filter_isoparametrization.pro
---- meshlab-1.3.0/meshlab/src/meshlabplugins/filter_isoparametrization/filter_isoparametrization.pro.sharedlib	2011-01-25 00:50:05.000000000 -0700
-+++ meshlab-1.3.0/meshlab/src/meshlabplugins/filter_isoparametrization/filter_isoparametrization.pro	2011-08-03 17:14:44.000000000 -0600
+diff -up meshlab-1.3.1/meshlab/src/meshlabplugins/filter_isoparametrization/filter_isoparametrization.pro.sharedlib meshlab-1.3.1/meshlab/src/meshlabplugins/filter_isoparametrization/filter_isoparametrization.pro
+--- meshlab-1.3.1/meshlab/src/meshlabplugins/filter_isoparametrization/filter_isoparametrization.pro.sharedlib	2011-01-24 23:50:05.000000000 -0800
++++ meshlab-1.3.1/meshlab/src/meshlabplugins/filter_isoparametrization/filter_isoparametrization.pro	2011-10-05 19:59:01.000000000 -0700
 @@ -23,8 +23,7 @@ HEADERS       += ./diamond_sampler.h \
  SOURCES       += ./filter_isoparametrization.cpp 
  				
@@ -203,9 +229,9 @@ diff -up meshlab-1.3.0/meshlab/src/meshlabplugins/filter_isoparametrization/filt
  macx:LIBS += ../../../src/external/lib/macx/liblevmar.a
  
  # Please never ever uncomment this...
-diff -up meshlab-1.3.0/meshlab/src/meshlabplugins/filter_isoparametrization/param_collapse.h.sharedlib meshlab-1.3.0/meshlab/src/meshlabplugins/filter_isoparametrization/param_collapse.h
---- meshlab-1.3.0/meshlab/src/meshlabplugins/filter_isoparametrization/param_collapse.h.sharedlib	2011-01-25 00:50:05.000000000 -0700
-+++ meshlab-1.3.0/meshlab/src/meshlabplugins/filter_isoparametrization/param_collapse.h	2011-08-03 17:14:44.000000000 -0600
+diff -up meshlab-1.3.1/meshlab/src/meshlabplugins/filter_isoparametrization/param_collapse.h.sharedlib meshlab-1.3.1/meshlab/src/meshlabplugins/filter_isoparametrization/param_collapse.h
+--- meshlab-1.3.1/meshlab/src/meshlabplugins/filter_isoparametrization/param_collapse.h.sharedlib	2011-01-24 23:50:05.000000000 -0800
++++ meshlab-1.3.1/meshlab/src/meshlabplugins/filter_isoparametrization/param_collapse.h	2011-10-05 19:59:01.000000000 -0700
 @@ -14,7 +14,7 @@
  
  #include <local_parametrization.h>
@@ -215,9 +241,9 @@ diff -up meshlab-1.3.0/meshlab/src/meshlabplugins/filter_isoparametrization/para
  #include <uv_grid.h>
  
  #include "opt_patch.h"
-diff -up meshlab-1.3.0/meshlab/src/meshlabplugins/filter_isoparametrization/parametrizator.h.sharedlib meshlab-1.3.0/meshlab/src/meshlabplugins/filter_isoparametrization/parametrizator.h
---- meshlab-1.3.0/meshlab/src/meshlabplugins/filter_isoparametrization/parametrizator.h.sharedlib	2011-01-25 00:50:05.000000000 -0700
-+++ meshlab-1.3.0/meshlab/src/meshlabplugins/filter_isoparametrization/parametrizator.h	2011-08-03 17:14:44.000000000 -0600
+diff -up meshlab-1.3.1/meshlab/src/meshlabplugins/filter_isoparametrization/parametrizator.h.sharedlib meshlab-1.3.1/meshlab/src/meshlabplugins/filter_isoparametrization/parametrizator.h
+--- meshlab-1.3.1/meshlab/src/meshlabplugins/filter_isoparametrization/parametrizator.h.sharedlib	2011-01-24 23:50:05.000000000 -0800
++++ meshlab-1.3.1/meshlab/src/meshlabplugins/filter_isoparametrization/parametrizator.h	2011-10-05 19:59:01.000000000 -0700
 @@ -34,7 +34,7 @@
  #include <vcg/space/color4.h>
  #include <dual_coord_optimization.h>
@@ -227,9 +253,9 @@ diff -up meshlab-1.3.0/meshlab/src/meshlabplugins/filter_isoparametrization/para
  #ifndef _MESHLAB
  #include <wrap/io_trimesh/export_ply.h>
  #endif
-diff -up meshlab-1.3.0/meshlab/src/meshlabplugins/io_3ds/io_3ds.pro.sharedlib meshlab-1.3.0/meshlab/src/meshlabplugins/io_3ds/io_3ds.pro
---- meshlab-1.3.0/meshlab/src/meshlabplugins/io_3ds/io_3ds.pro.sharedlib	2011-01-25 00:49:55.000000000 -0700
-+++ meshlab-1.3.0/meshlab/src/meshlabplugins/io_3ds/io_3ds.pro	2011-08-03 17:14:44.000000000 -0600
+diff -up meshlab-1.3.1/meshlab/src/meshlabplugins/io_3ds/io_3ds.pro.sharedlib meshlab-1.3.1/meshlab/src/meshlabplugins/io_3ds/io_3ds.pro
+--- meshlab-1.3.1/meshlab/src/meshlabplugins/io_3ds/io_3ds.pro.sharedlib	2011-01-24 23:49:55.000000000 -0800
++++ meshlab-1.3.1/meshlab/src/meshlabplugins/io_3ds/io_3ds.pro	2011-10-05 19:59:01.000000000 -0700
 @@ -14,7 +14,7 @@ SOURCES       += 	meshio.cpp \
  
  TARGET        = io_3ds
@@ -250,9 +276,9 @@ diff -up meshlab-1.3.0/meshlab/src/meshlabplugins/io_3ds/io_3ds.pro.sharedlib me
  
  # unix:LIBS		+= -L../../../../code/lib/lib3ds-1.3.0/lib3ds/lib/unix -l3ds
  
-diff -up meshlab-1.3.0/meshlab/src/meshlabplugins/io_epoch/io_epoch.pro.sharedlib meshlab-1.3.0/meshlab/src/meshlabplugins/io_epoch/io_epoch.pro
---- meshlab-1.3.0/meshlab/src/meshlabplugins/io_epoch/io_epoch.pro.sharedlib	2011-01-25 00:50:02.000000000 -0700
-+++ meshlab-1.3.0/meshlab/src/meshlabplugins/io_epoch/io_epoch.pro	2011-08-03 17:14:44.000000000 -0600
+diff -up meshlab-1.3.1/meshlab/src/meshlabplugins/io_epoch/io_epoch.pro.sharedlib meshlab-1.3.1/meshlab/src/meshlabplugins/io_epoch/io_epoch.pro
+--- meshlab-1.3.1/meshlab/src/meshlabplugins/io_epoch/io_epoch.pro.sharedlib	2011-01-24 23:50:02.000000000 -0800
++++ meshlab-1.3.1/meshlab/src/meshlabplugins/io_epoch/io_epoch.pro	2011-10-05 19:59:01.000000000 -0700
 @@ -30,16 +30,11 @@ QT           += xml
  win32-msvc2005:LIBS	   += ../../external/lib/win32-msvc2005/bz2.lib
  win32-msvc2008:LIBS	   += ../../external/lib/win32-msvc2008/bz2.lib
@@ -271,9 +297,9 @@ diff -up meshlab-1.3.0/meshlab/src/meshlabplugins/io_epoch/io_epoch.pro.sharedli
  
  mac:LIBS   += -lbz2
  
-diff -up meshlab-1.3.0/meshlab/src/meshlabserver/meshlabserver.pro.sharedlib meshlab-1.3.0/meshlab/src/meshlabserver/meshlabserver.pro
---- meshlab-1.3.0/meshlab/src/meshlabserver/meshlabserver.pro.sharedlib	2011-01-25 00:49:46.000000000 -0700
-+++ meshlab-1.3.0/meshlab/src/meshlabserver/meshlabserver.pro	2011-08-03 17:14:44.000000000 -0600
+diff -up meshlab-1.3.1/meshlab/src/meshlabserver/meshlabserver.pro.sharedlib meshlab-1.3.1/meshlab/src/meshlabserver/meshlabserver.pro
+--- meshlab-1.3.1/meshlab/src/meshlabserver/meshlabserver.pro.sharedlib	2011-01-24 23:49:46.000000000 -0800
++++ meshlab-1.3.1/meshlab/src/meshlabserver/meshlabserver.pro	2011-10-05 20:01:25.000000000 -0700
 @@ -1,5 +1,3 @@
 -GLEWDIR = ../external/glew-1.5.1
 -
@@ -303,9 +329,9 @@ diff -up meshlab-1.3.0/meshlab/src/meshlabserver/meshlabserver.pro.sharedlib mes
  CONFIG += stl 
  CONFIG += console
  
-diff -up meshlab-1.3.0/meshlab/src/shared.pri.sharedlib meshlab-1.3.0/meshlab/src/shared.pri
---- meshlab-1.3.0/meshlab/src/shared.pri.sharedlib	2011-01-25 00:50:20.000000000 -0700
-+++ meshlab-1.3.0/meshlab/src/shared.pri	2011-08-03 17:14:44.000000000 -0600
+diff -up meshlab-1.3.1/meshlab/src/shared.pri.sharedlib meshlab-1.3.1/meshlab/src/shared.pri
+--- meshlab-1.3.1/meshlab/src/shared.pri.sharedlib	2011-01-24 23:50:20.000000000 -0800
++++ meshlab-1.3.1/meshlab/src/shared.pri	2011-10-05 19:59:01.000000000 -0700
 @@ -8,7 +8,6 @@ QT += xmlpatterns
  QT += script
  

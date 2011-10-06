@@ -1,19 +1,19 @@
 Summary:	A system for processing and editing unstructured 3D triangular meshes
 Name:		meshlab
-Version:	1.3.0a
-Release:	2%{?dist}
+Version:	1.3.1
+Release:	1%{?dist}
 URL:		http://meshlab.sourceforge.net/`
 
 Source0:	http://downloads.sourceforge.net/%{name}/MeshLabSrc_AllInc_v130a.tgz
 Source1:	meshlab-48x48.xpm
 
-# Meshlab v130a tarball is missing the docs directory. Reported upstream,
+# Meshlab v131 tarball is missing the docs directory. Reported upstream,
 # but for now we'll extract them from the v122 tarball.
-Source2:	http://downloads/sourceforge.net/%{name}/MeshLabSrc_v122.tar.gz
+Source2:	http://downloads.sourceforge.net/%{name}/MeshLabSrc_v122.tar.gz
 
 # Fedora-specific patches to use shared libraries, and to put plugins and
 # shaders in appropriate directories
-Patch0:		meshlab-1.3.0a-sharedlib.patch
+Patch0:		meshlab-1.3.1-sharedlib.patch
 Patch1:		meshlab-1.2.3a-plugin-path.patch
 Patch2:		meshlab-1.3.0a-shader-path.patch
 
@@ -36,8 +36,11 @@ BuildRequires:	lib3ds-devel
 BuildRequires:	muParser-devel
 BuildRequires:	qhull-devel
 BuildRequires:	qt-devel
-BuildRequires:	ImageMagick
+BuildRequires:	qtsoap-devel
+
+BuildRequires:	chrpath
 BuildRequires:	desktop-file-utils
+BuildRequires:	ImageMagick
 
 %description
 MeshLab is an open source, portable, and extensible system for the
@@ -69,7 +72,7 @@ find . \( -name *.h -o -name *.cpp -o -name *.inl \) -a -executable \
 # Remove bundled library sources, since we use the Fedora packaged
 # libraries
 rm -rf vcglib/wrap/system
-rm -rf meshlab/src/external/{ann*,bzip2*,glew*,levmar*,lib3ds*,muparser*,ode*,qhull*}
+rm -rf meshlab/src/external/{ann*,bzip2*,glew*,levmar*,lib3ds*,muparser*,ode*,qhull*,qtsoap*}
 
 %build
 # Build instructions from the wiki:
@@ -77,10 +80,10 @@ rm -rf meshlab/src/external/{ann*,bzip2*,glew*,levmar*,lib3ds*,muparser*,ode*,qh
 # Note that the build instructions in README.linux are out of date.
 
 cd meshlab/src/external
-%{_qt4_qmake} -spec linux-g++ -recursive external.pro
+%{_qt4_qmake} -recursive external.pro
 make %{?_smp_mflags} CFLAGS="%{optflags}"
 cd ..
-%{_qt4_qmake} -spec linux-g++ -recursive meshlab_full.pro
+%{_qt4_qmake} -recursive meshlab_full.pro
 make %{?_smp_mflags} CFLAGS="%{optflags}" \
 	DEFINES="-D__DISABLE_AUTO_STATS__ -DPLUGIN_DIR=\\\"%{_libdir}/%{name}\\\""
 
@@ -110,6 +113,16 @@ done
 
 %install
 rm -rf %{buildroot}
+
+# The QMAKE_RPATHDIR stuff puts in the path to the compile-time location
+# of libcommon, which won't work at runtime, so we change the rpath here.
+# The use of rpath will cause an rpmlint error, but the Fedora Packaging
+# Guidelines specifically allow use of an rpath for internal libraries:
+# http://fedoraproject.org/wiki/Packaging:Guidelines#Rpath_for_Internal_Libraries
+# Ideally upstream would rename the library to libmeshlab, libmeshlabcommon,
+# or the like, so that we could put it in the system library directory
+# and avoid rpath entirely.
+chrpath -r %{_libdir}/meshlab meshlab/src/distrib/{meshlab,meshlabserver}
 
 install -d -m 755 %{buildroot}%{_bindir}
 install -p -m 755 meshlab/src/distrib/meshlab \
@@ -183,8 +196,10 @@ rm -rf %{buildroot}
 %{_datadir}/pixmaps/meshlab.png
 
 %changelog
-* Mon Aug 08 2011 Eric Smith <eric@brouhaha.com> - 1.3.0a-2
-- use qmail -spec linux-g++ to fix FTBFS with qt 4.8
+* Wed Oct 05 2011 Eric Smith <eric@brouhaha.com> - 1.3.1-1
+- update to latest upstream release
+- removed bundled qtsoap, use shared library from Fedora package
+- fix rpath handling for internal-only library
 
 * Wed Aug 03 2011 Eric Smith <eric@brouhaha.com> - 1.3.0a-1
 - update to latest upstream release
