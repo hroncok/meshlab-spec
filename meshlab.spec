@@ -1,10 +1,10 @@
 Summary:	A system for processing and editing unstructured 3D triangular meshes
 Name:		meshlab
-Version:	1.3.0a
+Version:	1.3.1
 Release:	1%{?dist}
 URL:		http://meshlab.sourceforge.net/`
 
-Source0:	http://downloads.sourceforge.net/%{name}/MeshLabSrc_AllInc_v130a.tgz
+Source0:	http://downloads.sourceforge.net/%{name}/MeshLabSrc_AllInc_v131.tgz
 Source1:	meshlab-48x48.xpm
 
 # Meshlab v131 tarball is missing the docs directory. Reported upstream,
@@ -13,17 +13,23 @@ Source2:	http://downloads.sourceforge.net/%{name}/MeshLabSrc_v122.tar.gz
 
 # Fedora-specific patches to use shared libraries, and to put plugins and
 # shaders in appropriate directories
-Patch0:		meshlab-1.3.0a-sharedlib.patch
+Patch0:		meshlab-1.3.1-sharedlib.patch
 Patch1:		meshlab-1.2.3a-plugin-path.patch
-Patch2:		meshlab-1.3.0a-shader-path.patch
+Patch2:		meshlab-1.3.1-shader-path.patch
 
 # Patch to fix FTBFS due to missing include
 # from Teemu Ikonen <tpikonen@gmail.com>
-Patch3:		meshlab-1.3.0a-cstddef.patch
+Patch3:		meshlab-1.3.1-cstddef.patch
 
 # Patch to fix reading of .ply files in comma separator locales
 # from Teemu Ikonen <tpikonen@gmail.com>
-Patch4:		meshlab-1.3.0a-ply-numeric.patch
+Patch4:		meshlab-1.3.1-ply-numeric.patch
+
+# Add #include <GL/glu.h> to various files
+Patch5:		meshlab-1.3.1-glu.patch
+
+# Disable io_ctm until openctm is packaged
+Patch6:		meshlab-1.3.1-noctm.patch
 
 License:	GPLv2+ and BSD
 Group:		Applications/Multimedia
@@ -61,8 +67,10 @@ rm -rf meshlab-snapshot-svn3524
 %patch -P 0 -p1 -b .sharedlib
 %patch -P 1 -p1 -b .plugin-path
 %patch -P 2 -p1 -b .shader-path
-%patch -P 3 -p1 -b .ply-numeric
-%patch -P 4 -p1 -b .cstddef
+%patch -P 3 -p1 -b .cstddef
+%patch -P 4 -p1 -b .ply-numeric
+%patch -P 5 -p1 -b .glu
+%patch -P 6 -p1 -b .noctm
 
 # Turn of execute permissions on source files to avoid rpmlint
 # errors and warnings for the debuginfo package
@@ -196,6 +204,12 @@ rm -rf %{buildroot}
 %{_datadir}/pixmaps/meshlab.png
 
 %changelog
+* Fri Oct 21 2011 Orion Poplawski <orion@cora.nwra.com> - 1.3.1-1
+- Update to 1.3.1
+- Rebase patches
+- Add new patches to add needed includes and disable openctm support until
+  openctm is packaged
+
 * Wed Oct 05 2011 Eric Smith <eric@brouhaha.com> - 1.3.0a-2
 - removed bundled qtsoap, use shared library from Fedora package
 - fix rpath handling for internal-only library
