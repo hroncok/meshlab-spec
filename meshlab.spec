@@ -1,7 +1,7 @@
 Summary:	A system for processing and editing unstructured 3D triangular meshes
 Name:		meshlab
 Version:	1.3.1
-Release:	1%{?dist}
+Release:	2%{?dist}
 URL:		http://meshlab.sourceforge.net/`
 
 Source0:	http://downloads.sourceforge.net/%{name}/MeshLabSrc_AllInc_v131.tgz
@@ -30,6 +30,11 @@ Patch5:		meshlab-1.3.1-glu.patch
 
 # Disable io_ctm until openctm is packaged
 Patch6:		meshlab-1.3.1-noctm.patch
+
+# Fix crash in XSetCommand() in XSetWMProperties() due to bad argc,
+# because mlapplication subclass of QApplication doesn't declare argc
+# as a reference.
+Patch7:		meshlab-1.3.1-argcref.patch
 
 License:	GPLv2+ and BSD
 Group:		Applications/Multimedia
@@ -71,6 +76,7 @@ rm -rf meshlab-snapshot-svn3524
 %patch -P 4 -p1 -b .ply-numeric
 %patch -P 5 -p1 -b .glu
 %patch -P 6 -p1 -b .noctm
+%patch -P 7 -p1 -b .argcref
 
 # Turn of execute permissions on source files to avoid rpmlint
 # errors and warnings for the debuginfo package
@@ -204,6 +210,9 @@ rm -rf %{buildroot}
 %{_datadir}/pixmaps/meshlab.png
 
 %changelog
+* Mon Oct 31 2011 Eric Smith <eric@brouhaha.com> - 1.3.1-2
+- Add new patch to avoid crash due to mishandling of argc
+
 * Fri Oct 21 2011 Orion Poplawski <orion@cora.nwra.com> - 1.3.1-1
 - Update to 1.3.1
 - Rebase patches
