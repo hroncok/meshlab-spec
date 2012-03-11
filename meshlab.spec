@@ -1,7 +1,7 @@
 Summary:	A system for processing and editing unstructured 3D triangular meshes
 Name:		meshlab
 Version:	1.3.1
-Release:	4%{?dist}
+Release:	4%{?dist}.1
 URL:		http://meshlab.sourceforge.net/`
 
 Source0:	http://downloads.sourceforge.net/%{name}/MeshLabSrc_AllInc_v131.tgz
@@ -210,6 +210,9 @@ rm -rf %{buildroot}
 %{_datadir}/pixmaps/meshlab.png
 
 %changelog
+* Sat Mar 10 2012 Eric Smith <eric@brouhaha.com> - 1.3.1-4.1
+- Rebuilt for new muParser library
+
 * Tue Feb 28 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.3.1-4
 - Rebuilt for c++ ABI breakage
 
