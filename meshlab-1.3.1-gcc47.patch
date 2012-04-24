@@ -1,0 +1,221 @@
+diff -up meshlab-1.3.1/meshlab/src/meshlabplugins/decorate_base/colorhistogram.h.gcc47 meshlab-1.3.1/meshlab/src/meshlabplugins/decorate_base/colorhistogram.h
+--- meshlab-1.3.1/meshlab/src/meshlabplugins/decorate_base/colorhistogram.h.gcc47	2012-04-24 08:12:42.711983108 -0700
++++ meshlab-1.3.1/meshlab/src/meshlabplugins/decorate_base/colorhistogram.h	2012-04-24 08:13:35.219987494 -0700
+@@ -27,7 +27,7 @@ public:
+    */
+   void Add(ScalarType v,Color4b c,float increment);
+ 
+-  Color4b BinColorAvg(ScalarType v) { return BinColorAvgInd(BinIndex(v)); }
++  Color4b BinColorAvg(ScalarType v) { return BinColorAvgInd(this->BinIndex(v)); }
+ 
+   Color4b BinColorAvgInd(int index) {
+     return Color4b( (unsigned char)((CV[index][0] / float(this->H[index]))),
+@@ -40,7 +40,7 @@ public:
+ 
+   //! Reset histogram data.
+   void Clear() {
+-    this->::Clear();
++    this->Clear();
+     CV.clear();
+   }
+   /*
+@@ -82,7 +82,7 @@ asking for 4    lower bound will return
+ template <class ScalarType>
+ void ColorHistogram<ScalarType>::Add(ScalarType v,Color4b c,float increment=1.0f)
+ {
+-  int pos=BinIndex(v);
++  int pos=this->BinIndex(v);
+   if(v<this->minElem) this->minElem=v;
+   if(v>this->maxElem) this->maxElem=v;
+   if(pos>=0 && pos<=this->n)
+diff -up meshlab-1.3.1/meshlab/src/meshlabplugins/filter_trioptimize/curvedgeflip.h.gcc47 meshlab-1.3.1/meshlab/src/meshlabplugins/filter_trioptimize/curvedgeflip.h
+--- meshlab-1.3.1/meshlab/src/meshlabplugins/filter_trioptimize/curvedgeflip.h.gcc47	2012-04-24 08:12:32.295982247 -0700
++++ meshlab-1.3.1/meshlab/src/meshlabplugins/filter_trioptimize/curvedgeflip.h	2012-04-24 08:13:35.198987492 -0700
+@@ -327,7 +327,7 @@ public:
+ 				for (unsigned int i = 0; i < 3; i++)
+ 					if ((*fi).V1(i) - (*fi).V0(i) > 0) {
+ 						PosType newpos(&*fi, i);
+-            Insert(heap, newpos, tri::IMark(m),pp);
++            CurvEdgeFlip::Insert(heap, newpos, tri::IMark(m),pp);
+ 					}
+ 	}
+ }; // end CurvEdgeFlip class
+diff -up meshlab-1.3.1/vcglib/vcg/complex/algorithms/clean.h.gcc47 meshlab-1.3.1/vcglib/vcg/complex/algorithms/clean.h
+--- meshlab-1.3.1/vcglib/vcg/complex/algorithms/clean.h.gcc47	2012-04-24 08:10:51.891973868 -0700
++++ meshlab-1.3.1/vcglib/vcg/complex/algorithms/clean.h	2012-04-24 08:13:35.192987492 -0700
+@@ -420,7 +420,7 @@ private:
+               std::set<FaceInt> faceSet;
+               do
+               {
+-                faceSet.insert(make_pair(curPos.F(),curPos.VInd()));
++                faceSet.insert(std::make_pair(curPos.F(),curPos.VInd()));
+                 curPos.NextE();
+               } while (curPos != startPos);
+ 
+diff -up meshlab-1.3.1/vcglib/vcg/complex/algorithms/update/color.h.gcc47 meshlab-1.3.1/vcglib/vcg/complex/algorithms/update/color.h
+--- meshlab-1.3.1/vcglib/vcg/complex/algorithms/update/color.h.gcc47	2012-04-24 08:11:02.272974722 -0700
++++ meshlab-1.3.1/vcglib/vcg/complex/algorithms/update/color.h	2012-04-24 08:13:35.195987492 -0700
+@@ -153,7 +153,7 @@ static void VertexBorderFlag( UpdateMesh
+ static void FaceRandomConnectedComponent( UpdateMeshType &m)
+ {
+   std::vector< std::pair<int, typename UpdateMeshType::FacePointer> > CCV;
+-  int ScatterSize= min (100,tri::Clean<UpdateMeshType>::ConnectedComponents(m, CCV)); // number of random color to be used. Never use too many.
++  int ScatterSize= std::min (100,tri::Clean<UpdateMeshType>::ConnectedComponents(m, CCV)); // number of random color to be used. Never use too many.
+ 
+   ConnectedIterator<MeshType> ci;
+   for(unsigned int i=0;i<CCV.size();++i)
+diff -up meshlab-1.3.1/vcglib/vcg/math/lin_algebra.h.gcc47 meshlab-1.3.1/vcglib/vcg/math/lin_algebra.h
+--- meshlab-1.3.1/vcglib/vcg/math/lin_algebra.h.gcc47	2012-04-24 08:09:58.339969378 -0700
++++ meshlab-1.3.1/vcglib/vcg/math/lin_algebra.h	2012-04-24 08:13:35.186987490 -0700
+@@ -52,6 +52,7 @@ Added initial disclaimer
+ #include <vcg/math/base.h>
+ #include <vcg/math/matrix44.h>
+ #include <algorithm>
++#include <math.h>
+ 
+ namespace vcg
+ {
+@@ -217,6 +218,12 @@ namespace vcg
+ 		}
+ 	};
+ 
++	template <typename TYPE>
++	inline static TYPE sqr(TYPE a)
++	{
++		TYPE sqr_arg = a;
++		return (sqr_arg == 0 ? 0 : sqr_arg*sqr_arg);
++	}
+ 
+ 	// Computes (a^2 + b^2)^(1/2) without destructive underflow or overflow.
+ 	template <typename TYPE>
+@@ -236,12 +243,6 @@ namespace vcg
+ 		return (b >= 0.0 ? fabs(a) : -fabs(a));
+ 	};
+ 
+-	template <typename TYPE>
+-	inline static TYPE sqr(TYPE a)
+-	{
+-		TYPE sqr_arg = a;
+-		return (sqr_arg == 0 ? 0 : sqr_arg*sqr_arg);
+-	}
+ 
+ 	/*!
+ 	*
+diff -up meshlab-1.3.1/vcglib/vcg/space/index/grid_static_obj.h.gcc47 meshlab-1.3.1/vcglib/vcg/space/index/grid_static_obj.h
+--- meshlab-1.3.1/vcglib/vcg/space/index/grid_static_obj.h.gcc47	2012-04-24 08:10:21.035971264 -0700
++++ meshlab-1.3.1/vcglib/vcg/space/index/grid_static_obj.h	2012-04-24 08:13:35.188987492 -0700
+@@ -72,7 +72,7 @@ class GridStaticObj : public BasicGrid<F
+ 	 inline ~GridStaticObj() { if(grid) delete[] grid; }
+ 	 inline void Init(const ObjType &val)
+ 	 {
+-		 fill(grid,grid+size(),val);
++		 std::fill(grid,grid+size(),val);
+ 	 }
+ 
+ 
+@@ -94,7 +94,7 @@ class GridStaticObj : public BasicGrid<F
+ 	 }
+ 
+ 	 // Dato un punto ritorna l'indice della cella
+-	 inline int GridIndF( const Point3<FLT> & p ) const { return GridIndI(GridP(p)); 	}
++	 inline int GridIndF( const Point3<FLT> & p ) const { return GridIndI(this->GridP(p)); 	}
+   
+ 	void Create( const Point3i &_siz, const ObjType & init )
+ 	{
+@@ -106,7 +106,7 @@ class GridStaticObj : public BasicGrid<F
+ 		if(grid) delete[] grid;
+ 		int n = this->siz[0]*this->siz[1]*this->siz[2];
+ 		grid = new ObjType[n];
+-		fill(grid,grid+n,init);
++		std::fill(grid,grid+n,init);
+ 	}
+ 
+ 	/// Crea una griglia di un dato bbox e con un certo numero di elem.
+diff -up meshlab-1.3.1/vcglib/vcg/space/index/octree.h.gcc47 meshlab-1.3.1/vcglib/vcg/space/index/octree.h
+--- meshlab-1.3.1/vcglib/vcg/space/index/octree.h.gcc47	2012-04-24 08:11:19.125976123 -0700
++++ meshlab-1.3.1/vcglib/vcg/space/index/octree.h	2012-04-24 08:13:35.196987492 -0700
+@@ -288,7 +288,7 @@ public:
+ 				{
+ 					int placeholder_index = int(placeholders.size());
+ 					placeholders.push_back( ObjectPlaceholder< NodeType >() ); 
+-					placeholders[placeholder_index].z_order			 = BuildRoute(hit_leaf, route);
++					placeholders[placeholder_index].z_order			 = this->BuildRoute(hit_leaf, route);
+ 					placeholders[placeholder_index].leaf_pointer = route[depth];
+ 					placeholders[placeholder_index].object_index = i;					
+ 					
+@@ -631,7 +631,7 @@ OBJECT_RETRIEVER:
+ 				query_bb.Offset(TemplatedOctree::leafDiagonal);
+ 				sphere_radius+= TemplatedOctree::leafDiagonal;
+ 
+-				ContainedLeaves(query_bb, leaves, TemplatedOctree::Root(), TemplatedOctree::boundingBox);
++				this->ContainedLeaves(query_bb, leaves, TemplatedOctree::Root(), TemplatedOctree::boundingBox);
+ 
+ 				leaves_count = int(leaves.size());
+ 				object_count = 0;
+@@ -724,10 +724,10 @@ OBJECT_RETRIEVER:
+ 			VoxelPointer son_voxel;
+ 			for (int s=0; s<8; s++)
+ 			{
+-				NodePointer son_index = Son(n, s);
++				NodePointer son_index = this->Son(n, s);
+ 				if (son_index!=NULL)
+ 				{
+-					if (Level(son_index)!=TemplatedOctree::maximumDepth)
++					if (this->Level(son_index)!=TemplatedOctree::maximumDepth)
+ 						IndexInnerNodes(son_index);
+ 
+ 					son_voxel = TemplatedOctree::Voxel(son_index);
+diff -up meshlab-1.3.1/vcglib/vcg/space/index/spatial_hashing.h.gcc47 meshlab-1.3.1/vcglib/vcg/space/index/spatial_hashing.h
+--- meshlab-1.3.1/vcglib/vcg/space/index/spatial_hashing.h.gcc47	2012-04-24 08:12:09.093980305 -0700
++++ meshlab-1.3.1/vcglib/vcg/space/index/spatial_hashing.h	2012-04-24 08:13:35.197987492 -0700
+@@ -185,7 +185,7 @@ protected:
+ 			Box3<ScalarType> b;
+ 			s->GetBBox(b);
+ 			vcg::Box3i bb;
+-			BoxToIBox(b,bb);
++			this->BoxToIBox(b,bb);
+ 			//then insert all the cell of bb
+ 			for (int i=bb.min.X();i<=bb.max.X();i++)
+ 				for (int j=bb.min.Y();j<=bb.max.Y();j++)
+@@ -210,7 +210,7 @@ protected:
+         {
+             Box3x b(p-Point3f(radius,radius,radius),p+Point3f(radius,radius,radius));
+             vcg::Box3i bb;
+-            BoxToIBox(b,bb);
++            this->BoxToIBox(b,bb);
+             ScalarType r2=radius*radius;
+             int cnt=0;
+             std::vector<HashIterator> toDel;
+@@ -240,7 +240,7 @@ protected:
+         {
+             Box3x b(p-Point3f(radius,radius,radius),p+Point3f(radius,radius,radius));
+             vcg::Box3i bb;
+-            BoxToIBox(b,bb);
++            this->BoxToIBox(b,bb);
+             int cnt=0;
+             std::vector<HashIterator> toDel;
+ 
+diff -up meshlab-1.3.1/vcglib/wrap/gl/trimesh.h.gcc47 meshlab-1.3.1/vcglib/wrap/gl/trimesh.h
+--- meshlab-1.3.1/vcglib/wrap/gl/trimesh.h.gcc47	2012-04-24 08:09:21.725966319 -0700
++++ meshlab-1.3.1/vcglib/wrap/gl/trimesh.h	2012-04-24 08:13:35.185987489 -0700
+@@ -1003,7 +1003,8 @@ void Crease(MESH_TYPE &m, typename MESH_
+ 			}
+ 		}
+ 
+-	m.vert.math::Swap(newvert);
++	//m.vert.math::Swap(newvert);
++	m.vert.math(newvert);
+ 	m.vn=m.vert.size();
+ }
+ 
+diff -up meshlab-1.3.1/vcglib/wrap/ply/plystuff.h.gcc47 meshlab-1.3.1/vcglib/wrap/ply/plystuff.h
+--- meshlab-1.3.1/vcglib/wrap/ply/plystuff.h.gcc47	2012-04-24 08:11:48.341978568 -0700
++++ meshlab-1.3.1/vcglib/wrap/ply/plystuff.h	2012-04-24 08:13:35.197987492 -0700
+@@ -87,6 +87,7 @@ using namespace vcg;
+ #define DIR_SEP "/"
+ #endif
+ 
++#include <unistd.h>
+ 
+ namespace vcg {
+ namespace ply {

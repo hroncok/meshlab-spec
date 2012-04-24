@@ -1,8 +1,8 @@
 Summary:	A system for processing and editing unstructured 3D triangular meshes
 Name:		meshlab
 Version:	1.3.1
-Release:	4%{?dist}
-URL:		http://meshlab.sourceforge.net/`
+Release:	5%{?dist}
+URL:		http://meshlab.sourceforge.net/
 
 Source0:	http://downloads.sourceforge.net/%{name}/MeshLabSrc_AllInc_v131.tgz
 Source1:	meshlab-48x48.xpm
@@ -35,6 +35,10 @@ Patch6:		meshlab-1.3.1-noctm.patch
 # because mlapplication subclass of QApplication doesn't declare argc
 # as a reference.
 Patch7:		meshlab-1.3.1-argcref.patch
+
+# Fix problems with GCC 4.7 being more strict about C++ rules
+# Patch from Cristian Balint.
+Patch8:		meshlab-1.3.1-gcc47.patch
 
 License:	GPLv2+ and BSD
 Group:		Applications/Multimedia
@@ -77,6 +81,7 @@ rm -rf meshlab-snapshot-svn3524
 %patch -P 5 -p1 -b .glu
 %patch -P 6 -p1 -b .noctm
 %patch -P 7 -p1 -b .argcref
+%patch -P 8 -p1 -b .gcc47
 
 # Turn of execute permissions on source files to avoid rpmlint
 # errors and warnings for the debuginfo package
@@ -210,6 +215,9 @@ rm -rf %{buildroot}
 %{_datadir}/pixmaps/meshlab.png
 
 %changelog
+* Tue Apr 24 2012 Eric Smith <eric@brouhaha.com> - 1.3.1-5
+- Add new patch to resolve incompatibility with GCC 4.7
+
 * Tue Feb 28 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.3.1-4
 - Rebuilt for c++ ABI breakage
 
