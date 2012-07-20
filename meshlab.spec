@@ -1,7 +1,7 @@
 Summary:	A system for processing and editing unstructured 3D triangular meshes
 Name:		meshlab
 Version:	1.3.1
-Release:	5%{?dist}
+Release:	6%{?dist}
 URL:		http://meshlab.sourceforge.net/
 
 Source0:	http://downloads.sourceforge.net/%{name}/MeshLabSrc_AllInc_v131.tgz
@@ -215,6 +215,9 @@ rm -rf %{buildroot}
 %{_datadir}/pixmaps/meshlab.png
 
 %changelog
+* Fri Jul 20 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.3.1-6
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
+
 * Tue Apr 24 2012 Eric Smith <eric@brouhaha.com> - 1.3.1-5
 - Add new patch to resolve incompatibility with GCC 4.7
 
