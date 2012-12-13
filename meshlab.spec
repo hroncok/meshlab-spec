@@ -1,7 +1,7 @@
 Summary:	A system for processing and editing unstructured 3D triangular meshes
 Name:		meshlab
 Version:	1.3.1
-Release:	7%{?dist}
+Release:	8%{?dist}
 URL:		http://meshlab.sourceforge.net/
 
 Source0:	http://downloads.sourceforge.net/%{name}/MeshLabSrc_AllInc_v131.tgz
@@ -215,6 +215,9 @@ rm -rf %{buildroot}
 %{_datadir}/pixmaps/meshlab.png
 
 %changelog
+* Thu Dec 13 2012 Adam Jackson <ajax@redhat.com> - 1.3.1-8
+- Rebuild for glew 1.9.0
+
 * Wed Aug 01 2012 Adam Jackson <ajax@redhat.com> - 1.3.1-7
 - -Rebuild for new glew
 
