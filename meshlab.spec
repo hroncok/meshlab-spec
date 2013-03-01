@@ -1,10 +1,12 @@
 Summary:	A system for processing and editing unstructured 3D triangular meshes
 Name:		meshlab
-Version:	1.3.1
-Release:	9%{?dist}
+Version:	1.3.2
+Release:	1%{?dist}
 URL:		http://meshlab.sourceforge.net/
+License:	GPLv2+ and BSD and Public Domain
+Group:		Applications/Multimedia
 
-Source0:	http://downloads.sourceforge.net/%{name}/MeshLabSrc_AllInc_v131.tgz
+Source0:	http://downloads.sourceforge.net/%{name}/MeshLabSrc_AllInc_v132.tgz
 Source1:	meshlab-48x48.xpm
 
 # Meshlab v131 tarball is missing the docs directory. Reported upstream,
@@ -13,13 +15,14 @@ Source2:	http://downloads.sourceforge.net/%{name}/MeshLabSrc_v122.tar.gz
 
 # Fedora-specific patches to use shared libraries, and to put plugins and
 # shaders in appropriate directories
-Patch0:		meshlab-1.3.1-sharedlib.patch
-Patch1:		meshlab-1.2.3a-plugin-path.patch
-Patch2:		meshlab-1.3.1-shader-path.patch
+Patch0:		meshlab-1.3.2-sharedlib.patch
+Patch1:		meshlab-1.3.2-plugin-path.patch
+Patch2:		meshlab-1.3.2-shader-path.patch
 
-# Patch to fix FTBFS due to missing include
+# Patch to fix FTBFS due to missing include of <cstddef>
 # from Teemu Ikonen <tpikonen@gmail.com>
-Patch3:		meshlab-1.3.1-cstddef.patch
+# Also added a missing include of <unistd.h>
+Patch3:		meshlab-1.3.2-cstddef.patch
 
 # Patch to fix reading of .ply files in comma separator locales
 # from Teemu Ikonen <tpikonen@gmail.com>
@@ -29,20 +32,19 @@ Patch4:		meshlab-1.3.1-ply-numeric.patch
 Patch5:		meshlab-1.3.1-glu.patch
 
 # Disable io_ctm until openctm is packaged
-Patch6:		meshlab-1.3.1-noctm.patch
+Patch6:		meshlab-1.3.2-noctm.patch
 
-# Fix crash in XSetCommand() in XSetWMProperties() due to bad argc,
-# because mlapplication subclass of QApplication doesn't declare argc
-# as a reference.
-Patch7:		meshlab-1.3.1-argcref.patch
+# Change m.vert.math::Swap() to m.vert.swap()
+# See Debian bug 667276
+# http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=667276
+Patch9:		meshlab-1.3.2-vert-swap.patch
 
-# Fix problems with GCC 4.7 being more strict about C++ rules
-# Patch from Cristian Balint.
-Patch8:		meshlab-1.3.1-gcc47.patch
+# Yet another incompatibility with GCC 4.7
+Patch10:	meshlab-1.3.2-gcc47.patch
 
-License:	GPLv2+ and BSD
-Group:		Applications/Multimedia
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+# Include paths shouldn't have consecutive double slashes.  Causes
+# a problem for debugedit, used by rpmbuild to extract debuginfo.
+Patch11:	meshlab-1.3.2-include-path-double-slash.patch
 
 BuildRequires:	bzip2-devel
 BuildRequires:	glew-devel
@@ -80,8 +82,9 @@ rm -rf meshlab-snapshot-svn3524
 %patch -P 4 -p1 -b .ply-numeric
 %patch -P 5 -p1 -b .glu
 %patch -P 6 -p1 -b .noctm
-%patch -P 7 -p1 -b .argcref
-%patch -P 8 -p1 -b .gcc47
+%patch -P 9 -p1 -b .vert-swap
+%patch -P 10 -p1 -b .gcc47
+%patch -P 11 -p1 -b .include-path-double-slash
 
 # Turn of execute permissions on source files to avoid rpmlint
 # errors and warnings for the debuginfo package
@@ -100,7 +103,9 @@ rm -rf meshlab/src/external/{ann*,bzip2*,glew*,levmar*,lib3ds*,muparser*,ode*,qh
 
 cd meshlab/src/external
 %{_qt4_qmake} -recursive external.pro
-make %{?_smp_mflags} CFLAGS="%{optflags}"
+# Note: -fPIC added to make jhead link properly; don't know why this wasn't
+# also an issue with structuresynth
+make %{?_smp_mflags} CFLAGS="%{optflags} -fPIC"
 cd ..
 %{_qt4_qmake} -recursive meshlab_full.pro
 make %{?_smp_mflags} CFLAGS="%{optflags}" \
@@ -131,8 +136,6 @@ do
 done
 
 %install
-rm -rf %{buildroot}
-
 # The QMAKE_RPATHDIR stuff puts in the path to the compile-time location
 # of libcommon, which won't work at runtime, so we change the rpath here.
 # The use of rpath will cause an rpmlint error, but the Fedora Packaging
@@ -184,15 +187,11 @@ install -p -m 644 meshlab/src/meshlab.desktop \
 
 desktop-file-validate %{buildroot}%{_datadir}/applications/meshlab.desktop
 
-%clean
-rm -rf %{buildroot}
-
 %post -p /sbin/ldconfig
 
 %postun -p /sbin/ldconfig
 
 %files
-%defattr(-,root,root,-)
 %{_bindir}/meshlab
 %{_bindir}/meshlabserver
 %{_libdir}/meshlab/
@@ -215,6 +214,16 @@ rm -rf %{buildroot}
 %{_datadir}/pixmaps/meshlab.png
 
 %changelog
+* Thu Feb 28 2013 Eric Smith <eric@brouhaha.com> - 1.3.2-1
+- Update to upstream 1.3.2.
+- Updated Patch0.
+- Patch7 (argcref) no longer needed, fixed upstream.
+- Patch8 (gcc47) no longer needed, mostly fixed upstream.
+- Patch9 added, see Debian bug 667276, previously handled in patch8, but
+  unclear whether it was correct.
+- Patch10 by Miro Hrončok added to fix another incompatibility with GCC 4.7.
+- Patch11 by Jon Ciesla to fix include paths to prevent debugedit complaints.
+
 * Thu Feb 14 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.3.1-9
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
 
