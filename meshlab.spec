@@ -1,7 +1,7 @@
 Summary:	A system for processing and editing unstructured 3D triangular meshes
 Name:		meshlab
 Version:	1.3.2
-Release:	7%{?dist}
+Release:	8%{?dist}
 URL:		http://meshlab.sourceforge.net/
 License:	GPLv2+ and BSD and Public Domain
 Group:		Applications/Multimedia
@@ -214,6 +214,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/meshlab.desktop
 %{_datadir}/pixmaps/meshlab.png
 
 %changelog
+* Thu Jan 14 2016 Adam Jackson <ajax@redhat.com> - 1.3.2-8
+- Rebuild for glew 1.13
+
 * Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.3.2-7
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
 
