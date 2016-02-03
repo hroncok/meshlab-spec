@@ -1,7 +1,7 @@
 Summary:	A system for processing and editing unstructured 3D triangular meshes
 Name:		meshlab
 Version:	1.3.2
-Release:	8%{?dist}
+Release:	9%{?dist}
 URL:		http://meshlab.sourceforge.net/
 License:	GPLv2+ and BSD and Public Domain
 Group:		Applications/Multimedia
@@ -102,12 +102,12 @@ rm -rf meshlab/src/external/{ann*,bzip2*,glew*,levmar*,lib3ds*,muparser*,ode*,qh
 # Note that the build instructions in README.linux are out of date.
 
 cd meshlab/src/external
-%{_qt4_qmake} -recursive external.pro
+%{qmake_qt4} -recursive external.pro
 # Note: -fPIC added to make jhead link properly; don't know why this wasn't
 # also an issue with structuresynth
 make %{?_smp_mflags} CFLAGS="%{optflags} -fPIC"
 cd ..
-%{_qt4_qmake} -recursive meshlab_full.pro
+%{qmake_qt4} -recursive meshlab_full.pro
 make %{?_smp_mflags} CFLAGS="%{optflags}" \
 	DEFINES="-D__DISABLE_AUTO_STATS__ -DPLUGIN_DIR=\\\"%{_libdir}/%{name}\\\""
 
@@ -214,6 +214,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/meshlab.desktop
 %{_datadir}/pixmaps/meshlab.png
 
 %changelog
+* Wed Feb 03 2016 Rex Dieter <rdieter@fedoraproject.org> - 1.3.2-9
+- use %%qmake_qt4 macro to ensure proper build flags
+
 * Thu Jan 14 2016 Adam Jackson <ajax@redhat.com> - 1.3.2-8
 - Rebuild for glew 1.13
 
