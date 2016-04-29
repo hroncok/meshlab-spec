@@ -1,7 +1,7 @@
 Summary:	A system for processing and editing unstructured 3D triangular meshes
 Name:		meshlab
 Version:	1.3.2
-Release:	9%{?dist}
+Release:	10%{?dist}
 URL:		http://meshlab.sourceforge.net/
 License:	GPLv2+ and BSD and Public Domain
 Group:		Applications/Multimedia
@@ -59,6 +59,11 @@ BuildRequires:	chrpath
 BuildRequires:	desktop-file-utils
 BuildRequires:	ImageMagick
 
+%if "%{version}" <= "1.3.2"
+# meshlab <= 1.3.2 is not compliant to cxx11/14, enforce cxx98
+%global CXX98	CXX="%{__cxx} -std=gnu++98"
+%endif
+
 %description
 MeshLab is an open source, portable, and extensible system for the
 processing and editing of unstructured 3D triangular meshes.  The
@@ -96,6 +101,14 @@ find . \( -name *.h -o -name *.cpp -o -name *.inl \) -a -executable \
 rm -rf vcglib/wrap/system
 rm -rf meshlab/src/external/{ann*,bzip2*,glew*,levmar*,lib3ds*,muparser*,ode*,qhull*,qtsoap*}
 
+%if 0%{?fedora} > 24
+# Reflect qhull-2015.2 changes
+sed -i \
+  -e 's,#include <qhull/,#include <libqhull/,' \
+  -e 's,/qhull.h>,/libqhull.h>,' \
+  meshlab/src/meshlabplugins/filter_qhull/qhull_tools.h
+%endif
+
 %build
 # Build instructions from the wiki:
 #   http://meshlab.sourceforge.net/wiki/index.php/Compiling_V122
@@ -105,10 +118,10 @@ cd meshlab/src/external
 %{qmake_qt4} -recursive external.pro
 # Note: -fPIC added to make jhead link properly; don't know why this wasn't
 # also an issue with structuresynth
-make %{?_smp_mflags} CFLAGS="%{optflags} -fPIC"
+make %{?_smp_mflags} CFLAGS="%{optflags} -fPIC" %{?CXX98}
 cd ..
 %{qmake_qt4} -recursive meshlab_full.pro
-make %{?_smp_mflags} CFLAGS="%{optflags}" \
+make %{?_smp_mflags} CFLAGS="%{optflags}" %{?CXX98}  \
 	DEFINES="-D__DISABLE_AUTO_STATS__ -DPLUGIN_DIR=\\\"%{_libdir}/%{name}\\\""
 
 # process icon
@@ -214,6 +227,11 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/meshlab.desktop
 %{_datadir}/pixmaps/meshlab.png
 
 %changelog
+* Fri Apr 29 2016 Ralf Corsépius <corsepiu@fedoraproject.org> - 1.3.2-10
+- Compile with -std=gnu++98 to work around c++14 incompatibilities
+  (F24FTBFS, RHBZ#1305224).
+- Rebuild for qhull-2015.2-1.
+
 * Wed Feb 03 2016 Rex Dieter <rdieter@fedoraproject.org> - 1.3.2-9
 - use %%qmake_qt4 macro to ensure proper build flags
 
