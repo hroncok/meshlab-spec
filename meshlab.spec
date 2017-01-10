@@ -1,7 +1,7 @@
 Summary:	A system for processing and editing unstructured 3D triangular meshes
 Name:		meshlab
 Version:	1.3.2
-Release:	10%{?dist}
+Release:	11%{?dist}
 URL:		http://meshlab.sourceforge.net/
 License:	GPLv2+ and BSD and Public Domain
 Group:		Applications/Multimedia
@@ -227,6 +227,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/meshlab.desktop
 %{_datadir}/pixmaps/meshlab.png
 
 %changelog
+* Tue Jan 10 2017 Orion Poplawski <orion@cora.nwra.com> - 1.3.2-11
+- Rebuild for glew 2.0.0
+
 * Fri Apr 29 2016 Ralf Corsépius <corsepiu@fedoraproject.org> - 1.3.2-10
 - Compile with -std=gnu++98 to work around c++14 incompatibilities
   (F24FTBFS, RHBZ#1305224).
