@@ -1,17 +1,16 @@
 Summary:	A system for processing and editing unstructured 3D triangular meshes
 Name:		meshlab
-Version:	1.3.2
-Release:	12%{?dist}
-URL:		http://meshlab.sourceforge.net/
+Version:	2016.12
+Release:	1%{?dist}
+URL:		http://www.meshlab.net/
 License:	GPLv2+ and BSD and Public Domain
-Group:		Applications/Multimedia
+Source0:	http://github.com/cnr-isti-vclab/%{name}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
-Source0:	http://downloads.sourceforge.net/%{name}/MeshLabSrc_AllInc_v132.tgz
-Source1:	meshlab-48x48.xpm
 
-# Meshlab v131 tarball is missing the docs directory. Reported upstream,
-# but for now we'll extract them from the v122 tarball.
-Source2:	http://downloads.sourceforge.net/%{name}/MeshLabSrc_v122.tar.gz
+%global vcgversion 1.0.1
+Source1:	https://github.com/cnr-isti-vclab/vcglib/archive/v1.0.1.tar.gz#/vcglib-%{vcgversion}.tar.gz
+
+Source2:	meshlab-48x48.xpm
 
 # Fedora-specific patches to use shared libraries, and to put plugins and
 # shaders in appropriate directories
@@ -46,23 +45,20 @@ Patch10:	meshlab-1.3.2-gcc47.patch
 # a problem for debugedit, used by rpmbuild to extract debuginfo.
 Patch11:	meshlab-1.3.2-include-path-double-slash.patch
 
+Patch101:	meshlab-2016.12-readheader.patch
+
 BuildRequires:	bzip2-devel
 BuildRequires:	glew-devel
 BuildRequires:	levmar-devel
 BuildRequires:	lib3ds-devel
 BuildRequires:	muParser-devel
 BuildRequires:	qhull-devel
-BuildRequires:	qt-devel
+BuildRequires:	qt5-devel
 BuildRequires:	qtsoap-devel
 
 BuildRequires:	chrpath
 BuildRequires:	desktop-file-utils
 BuildRequires:	ImageMagick
-
-%if "%{version}" <= "1.3.2"
-# meshlab <= 1.3.2 is not compliant to cxx11/14, enforce cxx98
-%global CXX98	CXX="%{__cxx} -std=gnu++98"
-%endif
 
 %description
 MeshLab is an open source, portable, and extensible system for the
@@ -73,23 +69,22 @@ for editing, cleaning, healing, inspecting, rendering and converting
 these kinds of meshes.
 
 %prep
-%setup -q -c %{name}-%{version}
+%setup -q -c -a1
+mv %{name}-%{version} %{name}
+mv vcglib-%{vcgversion} vcglib
 
-# get the missing docs directory from the old tarball
-%setup -q -T -D -a 2
-mv meshlab-snapshot-svn3524/meshlab/docs meshlab/docs
-rm -rf meshlab-snapshot-svn3524
+#patch -P 0 -p1 -b .sharedlib
+#patch -P 1 -p1 -b .plugin-path
+#patch -P 2 -p1 -b .shader-path
+#patch -P 3 -p1 -b .cstddef
+#patch -P 4 -p1 -b .ply-numeric
+#patch -P 5 -p1 -b .glu
+#patch -P 6 -p1 -b .noctm
+#patch -P 9 -p1 -b .vert-swap
+#patch -P 10 -p1 -b .gcc47
+#patch -P 11 -p1 -b .include-path-double-slash
 
-%patch -P 0 -p1 -b .sharedlib
-%patch -P 1 -p1 -b .plugin-path
-%patch -P 2 -p1 -b .shader-path
-%patch -P 3 -p1 -b .cstddef
-%patch -P 4 -p1 -b .ply-numeric
-%patch -P 5 -p1 -b .glu
-%patch -P 6 -p1 -b .noctm
-%patch -P 9 -p1 -b .vert-swap
-%patch -P 10 -p1 -b .gcc47
-%patch -P 11 -p1 -b .include-path-double-slash
+%patch -P 101 -p1
 
 # Turn of execute permissions on source files to avoid rpmlint
 # errors and warnings for the debuginfo package
@@ -98,16 +93,14 @@ find . \( -name *.h -o -name *.cpp -o -name *.inl \) -a -executable \
 
 # Remove bundled library sources, since we use the Fedora packaged
 # libraries
-rm -rf vcglib/wrap/system
-rm -rf meshlab/src/external/{ann*,bzip2*,glew*,levmar*,lib3ds*,muparser*,ode*,qhull*,qtsoap*}
+#rm -rf vcglib/wrap/system
+#rm -rf meshlab/src/external/{ann*,bzip2*,glew*,levmar*,lib3ds*,muparser*,ode*,qhull*,qtsoap*}
 
-%if 0%{?fedora} > 24
-# Reflect qhull-2015.2 changes
-sed -i \
-  -e 's,#include <qhull/,#include <libqhull/,' \
-  -e 's,/qhull.h>,/libqhull.h>,' \
-  meshlab/src/meshlabplugins/filter_qhull/qhull_tools.h
-%endif
+
+# Cannot read ...meshlab/src/plugins_experimental/io_TXT/io_TXT.pro: No such file or directory
+sed -i 's/io_TXT/io_txt/' meshlab/src/meshlab_full.pro
+mv meshlab/src/plugins_experimental/io_{TXT,txt}
+
 
 %build
 # Build instructions from the wiki:
@@ -115,17 +108,16 @@ sed -i \
 # Note that the build instructions in README.linux are out of date.
 
 cd meshlab/src/external
-%{qmake_qt4} -recursive external.pro
-# Note: -fPIC added to make jhead link properly; don't know why this wasn't
-# also an issue with structuresynth
-make %{?_smp_mflags} CFLAGS="%{optflags} -fPIC" %{?CXX98}
+%{qmake_qt5} -recursive external.pro
+make %{?_smp_mflags}
+
 cd ..
-%{qmake_qt4} -recursive meshlab_full.pro
-make %{?_smp_mflags} CFLAGS="%{optflags}" %{?CXX98}  \
+%{qmake_qt5} -recursive meshlab_full.pro
+make %{?_smp_mflags} \
 	DEFINES="-D__DISABLE_AUTO_STATS__ -DPLUGIN_DIR=\\\"%{_libdir}/%{name}\\\""
 
 # process icon
-convert %{SOURCE1} meshlab.png
+convert %{SOURCE2} meshlab.png
 
 # create desktop file
 cat <<EOF >meshlab.desktop
@@ -227,6 +219,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/meshlab.desktop
 %{_datadir}/pixmaps/meshlab.png
 
 %changelog
+* Sun Jul 09 2017 Miro Hrončok <mhroncok@redhat.com> - 2016.12-1
+- Update to 2016.12
+
 * Fri Feb 10 2017 Fedora Release Engineering <releng@fedoraproject.org> - 1.3.2-12
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
 
